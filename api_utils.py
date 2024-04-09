@@ -1,17 +1,16 @@
-from config import Config
 import requests
 import style
 from logzero import logger
 import json
 from pygments import highlight, lexers, formatters
-import pandas as pd
-from parse_data import clean_table
+
 
 def authenticate(config):
     '''
         Handle authentication to the API and set the access token
 
-        @param config: Config Class containing different variables such as the email, password and token
+        @param config: Config Class containing different variables
+        such as the email, password and token
 
     '''
     config.init_variables()
@@ -43,6 +42,7 @@ def authenticate(config):
     }
     return None
 
+
 def get_dashboard(config):
     '''
         Get the dashboard of the user
@@ -55,24 +55,19 @@ def get_dashboard(config):
     '''
     return config.get(f"https://api.jinka.fr/apiv2/alert/{config.TOKEN}/dashboard")
 
+
 def get_announces(config):
     '''
         Get the announces available for an alert
 
-        @return: dict containing the announces that can be converted into a json or a dataframe afterwards
+        @return: dict containing the announces that can be converted into a 
+        json or a dataframe afterwards
     '''
     return get_dashboard(config)['ads']
 
 
 def pretty_print(dashboard):
-    print(highlight(json.dumps(dashboard, indent=4), lexers.JsonLexer(), formatters.TerminalFormatter()))
+    print(highlight(json.dumps(dashboard, indent=4), lexers.JsonLexer(),
+          formatters.TerminalFormatter()))
     with open("data.json", "w") as f:
         f.write(json.dumps(dashboard, indent=4))
-
-if __name__ == "__main__":
-    config = Config()
-    authenticate(config)
-    announces_available = get_announces(config)
-    dataframe = pd.DataFrame(announces_available)
-    dataframe = clean_table(config.TOKEN, dataframe)
-    dataframe.to_csv("announces.csv", index=False)
