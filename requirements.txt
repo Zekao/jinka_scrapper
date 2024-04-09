@@ -1,0 +1,8 @@
+mysql-connector-python
+requests
+python-dotenv
+temporalio
+aiohttp
+typing
+dataclasses
+asyncio
